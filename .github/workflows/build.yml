@@ -17,7 +17,7 @@ jobs:
       - name: Run llvm/clang-format@shell
         run: |
           brew install clang-format
-      - run: cd tfx/; clang-format -style=file -i ios/Classes/*.h ios/Classes/*.m --dry-run
+      - run: cd tfx/; clang-format -style=file -i ios/Classes/*.h ios/Classes/*.m --dry-run --Werror
       - run: flutter --version
       - run: cd tfx/; flutter pub get
       - run: |
