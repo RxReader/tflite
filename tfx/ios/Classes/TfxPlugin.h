@@ -1,4 +1,4 @@
 #import <Flutter/Flutter.h>
 
-@interface TfxPlugin : NSObject<FlutterPlugin>
+@interface TfxPlugin : NSObject <FlutterPlugin>
 @end

@@ -9,7 +9,7 @@
 #endif
 
 @implementation TfxPlugin
-+ (void)registerWithRegistrar:(NSObject<FlutterPluginRegistrar>*)registrar {
-  [SwiftTfxPlugin registerWithRegistrar:registrar];
++ (void)registerWithRegistrar:(NSObject<FlutterPluginRegistrar> *)registrar {
+    [SwiftTfxPlugin registerWithRegistrar:registrar];
 }
 @end
