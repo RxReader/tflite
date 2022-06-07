@@ -9,7 +9,7 @@ import 'package:flutter/services.dart';
 class Tinker {
   const Tinker._();
 
-  static const MethodChannel _channel = MethodChannel('v7lin.github.io/tflite');
+  static const MethodChannel _channel = MethodChannel('v7lin.github.io/tfx');
 
   static Future<void> applyWorkaroundOnOldAndroidVersions() async {
     assert(Platform.isAndroid);

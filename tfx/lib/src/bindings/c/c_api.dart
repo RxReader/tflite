@@ -230,4 +230,3 @@ final int /*TfLiteStatus*/ Function(Pointer<TfLiteTensor> tensor, Pointer<Void> 
 /// REQUIRES: output_data_size == TfLiteTensorByteSize(tensor)
 final int /*TfLiteStatus*/ Function(Pointer<TfLiteTensor> output_tensor, Pointer<Void> output_data, int output_data_size) TfLiteTensorCopyToBuffer =
     tfliteLib.lookup<NativeFunction<Int32 Function(Pointer<TfLiteTensor> output_tensor, Pointer<Void> output_data, Size output_data_size)>>('TfLiteTensorCopyToBuffer').asFunction();
-

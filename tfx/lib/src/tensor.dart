@@ -9,7 +9,7 @@ import 'package:tfx/src/misc/list_shape.dart';
 import 'package:tfx/src/quanitzation_params.dart';
 
 class Tensor {
-  Tensor(Pointer<TfLiteTensor> ref): _ref = ref {
+  Tensor(Pointer<TfLiteTensor> ref) : _ref = ref {
     checkArgument(_ref.address != nullptr.address, message: 'Unable to create Tensor.');
   }
 
@@ -112,7 +112,7 @@ extension TensorShape on Tensor {
     } else if (shape[dim] != len) {
       throw ArgumentError('Mismatched lengths ${shape[dim]} and $len in dimension $dim');
     }
-    for (int i = 0; i < len; i++/*++i*/) {
+    for (int i = 0; i < len; i++ /*++i*/) {
       _fillShape(o[0], dim + 1, shape);
     }
   }
@@ -123,7 +123,7 @@ extension TensorCopyFrom on Tensor {
     copyFromBuffer(_convertObjectToBuffer(src, type));
   }
 
-  static Uint8List _convertObjectToBuffer(Object o, int/*TfLiteType*/ tfliteType) {
+  static Uint8List _convertObjectToBuffer(Object o, int /*TfLiteType*/ tfliteType) {
     if (o is Uint8List) {
       return o;
     }
@@ -141,7 +141,7 @@ extension TensorCopyFrom on Tensor {
     }
   }
 
-  static Uint8List _convertElementToBuffer(Object o, int/*TfLiteType*/ type) {
+  static Uint8List _convertElementToBuffer(Object o, int /*TfLiteType*/ type) {
     if (type == TfLiteType.kTfLiteFloat32) {
       if (o is double) {
         final ByteBuffer buffer = Uint8List(4).buffer;
@@ -219,7 +219,7 @@ extension TensorCopyTo on Tensor {
     }
   }
 
-  Object _convertBufferToObject(Uint8List bytes, int/*TfLiteType*/ type, List<int> shape) {
+  Object _convertBufferToObject(Uint8List bytes, int /*TfLiteType*/ type, List<int> shape) {
     final List<dynamic> list = <dynamic>[];
     if (type == TfLiteType.kTfLiteFloat32) {
       for (int i = 0; i < bytes.length; i += 4) {

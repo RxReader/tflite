@@ -172,7 +172,8 @@ class TfLiteGpuDelegateOptionsV2 extends Struct {
 ///   priority3 = TFLITE_GPU_INFERENCE_PRIORITY_AUTO
 ///   experimental_flags = TFLITE_GPU_EXPERIMENTAL_FLAGS_ENABLE_QUANT
 ///   max_delegated_partitions = 1
-final TfLiteGpuDelegateOptionsV2 Function() TfLiteGpuDelegateOptionsV2Default = tfliteGpuLib.lookup<NativeFunction<TfLiteGpuDelegateOptionsV2 Function()>>('TfLiteGpuDelegateOptionsV2Default').asFunction();
+final TfLiteGpuDelegateOptionsV2 Function() TfLiteGpuDelegateOptionsV2Default =
+    tfliteGpuLib.lookup<NativeFunction<TfLiteGpuDelegateOptionsV2 Function()>>('TfLiteGpuDelegateOptionsV2Default').asFunction();
 
 /// Creates a new delegate instance that need to be destroyed with
 /// TfLiteGpuDelegateV2Delete when delegate is no longer used by TFLite.

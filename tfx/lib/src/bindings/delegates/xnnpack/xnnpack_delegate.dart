@@ -9,8 +9,10 @@ import 'package:tfx/src/bindings/dylib.dart' show tfliteLib;
 /// Enable XNNPACK acceleration for signed quantized 8-bit inference.
 /// This includes operators with channel-wise quantized weights.
 const int TFLITE_XNNPACK_DELEGATE_FLAG_QS8 = 0x00000001;
+
 /// Enable XNNPACK acceleration for unsigned quantized 8-bit inference.
 const int TFLITE_XNNPACK_DELEGATE_FLAG_QU8 = 0x00000002;
+
 /// Force FP16 inference for FP32 operators.
 const int TFLITE_XNNPACK_DELEGATE_FLAG_FORCE_FP16 = 0x00000004;
 
@@ -21,12 +23,14 @@ class TfLiteXNNPackDelegateOptions extends Struct {
   /// 0 or negative value means no thread pool used.
   @Int32()
   external int num_threads;
+
   /// Bitfield with any combination of the following binary options:
   /// - TFLITE_XNNPACK_DELEGATE_FLAG_QS8
   /// - TFLITE_XNNPACK_DELEGATE_FLAG_QU8
   /// - TFLITE_XNNPACK_DELEGATE_FLAG_FORCE_FP16
   @Int32()
   external int flags;
+
   /// Cache for packed weights, can be shared between multiple instances of
   /// delegates.
   external Pointer<TfLiteXNNPackDelegateWeightsCache> weights_cache;
@@ -58,13 +62,15 @@ final Pointer<TfLiteDelegate> Function(Pointer<TfLiteXNNPackDelegateOptions> opt
     tfliteLib.lookup<NativeFunction<Pointer<TfLiteDelegate> Function(Pointer<TfLiteXNNPackDelegateOptions> options)>>('TfLiteXNNPackDelegateCreate').asFunction();
 
 /// Destroys a delegate created with `TfLiteXNNPackDelegateCreate` call.
-final void Function(Pointer<TfLiteDelegate> delegate) TfLiteXNNPackDelegateDelete = tfliteLib.lookup<NativeFunction<Void Function(Pointer<TfLiteDelegate> delegate)>>('TfLiteXNNPackDelegateDelete').asFunction();
+final void Function(Pointer<TfLiteDelegate> delegate) TfLiteXNNPackDelegateDelete =
+    tfliteLib.lookup<NativeFunction<Void Function(Pointer<TfLiteDelegate> delegate)>>('TfLiteXNNPackDelegateDelete').asFunction();
 
 /// Creates a new weights cache that can be shared with multiple delegate
 /// instances.
 final Pointer<TfLiteXNNPackDelegateWeightsCache> Function() TfLiteXNNPackDelegateWeightsCacheCreate =
-  tfliteLib.lookup<NativeFunction<Pointer<TfLiteXNNPackDelegateWeightsCache> Function()>>('TfLiteXNNPackDelegateWeightsCacheCreate').asFunction();
+    tfliteLib.lookup<NativeFunction<Pointer<TfLiteXNNPackDelegateWeightsCache> Function()>>('TfLiteXNNPackDelegateWeightsCacheCreate').asFunction();
 
 /// Destroys a weights cache created with
 /// `TfLiteXNNPackDelegateWeightsCacheCreate` call.
-final void Function(Pointer<TfLiteXNNPackDelegateWeightsCache> cache) TfLiteXNNPackWeightsCacheDelete = tfliteLib.lookup<NativeFunction<Void Function(Pointer<TfLiteXNNPackDelegateWeightsCache> cache)>>('TfLiteXNNPackWeightsCacheDelete').asFunction();
+final void Function(Pointer<TfLiteXNNPackDelegateWeightsCache> cache) TfLiteXNNPackWeightsCacheDelete =
+    tfliteLib.lookup<NativeFunction<Void Function(Pointer<TfLiteXNNPackDelegateWeightsCache> cache)>>('TfLiteXNNPackWeightsCacheDelete').asFunction();

@@ -25,7 +25,7 @@ class Model {
     return Model._(model);
   }
 
-  Model._(Pointer<TfLiteModel> ref): _ref = ref;
+  Model._(Pointer<TfLiteModel> ref) : _ref = ref;
 
   final Pointer<TfLiteModel> _ref;
   bool _deleted = false;

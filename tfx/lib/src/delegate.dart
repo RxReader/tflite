@@ -49,7 +49,7 @@ class CoreMlDelegate implements Delegate {
     return CoreMlDelegate._(delegate);
   }
 
-  CoreMlDelegate._(Pointer<TfLiteDelegate> ref): _ref = ref;
+  CoreMlDelegate._(Pointer<TfLiteDelegate> ref) : _ref = ref;
 
   @override
   final Pointer<TfLiteDelegate> _ref;
@@ -84,7 +84,7 @@ class GpuDelegateV2 implements Delegate {
     String? modelToken,
   }) {
     assert(Platform.isAndroid);
-    assert (isPrecisionLossAllowed == 0 || isPrecisionLossAllowed == 1);
+    assert(isPrecisionLossAllowed == 0 || isPrecisionLossAllowed == 1);
     final Pointer<TfLiteGpuDelegateOptionsV2> options = TfLiteGpuDelegateOptionsV2.allocate(
       isPrecisionLossAllowed,
       inferencePreference,
@@ -105,7 +105,7 @@ class GpuDelegateV2 implements Delegate {
     return GpuDelegateV2._(delegate);
   }
 
-  GpuDelegateV2._(Pointer<TfLiteDelegate> ref): _ref = ref;
+  GpuDelegateV2._(Pointer<TfLiteDelegate> ref) : _ref = ref;
 
   @override
   final Pointer<TfLiteDelegate> _ref;
@@ -146,7 +146,7 @@ class GpuDelegate implements Delegate {
     return GpuDelegate._(delegate);
   }
 
-  GpuDelegate._(Pointer<TfLiteDelegate> ref): _ref = ref;
+  GpuDelegate._(Pointer<TfLiteDelegate> ref) : _ref = ref;
 
   @override
   final Pointer<TfLiteDelegate> _ref;
@@ -187,7 +187,7 @@ class XNNPackDelegate implements Delegate {
     return XNNPackDelegate._(delegate);
   }
 
-  XNNPackDelegate._(Pointer<TfLiteDelegate> ref): _ref = ref;
+  XNNPackDelegate._(Pointer<TfLiteDelegate> ref) : _ref = ref;
 
   @override
   final Pointer<TfLiteDelegate> _ref;
@@ -209,7 +209,7 @@ class XNNPackDelegateWeightsCache {
     return XNNPackDelegateWeightsCache._(cache);
   }
 
-  XNNPackDelegateWeightsCache._(Pointer<TfLiteXNNPackDelegateWeightsCache> ref): _ref = ref;
+  XNNPackDelegateWeightsCache._(Pointer<TfLiteXNNPackDelegateWeightsCache> ref) : _ref = ref;
 
   final Pointer<TfLiteXNNPackDelegateWeightsCache> _ref;
   bool _deleted = false;
