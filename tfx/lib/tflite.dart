@@ -11,5 +11,4 @@ export 'src/misc/list_shape.dart';
 export 'src/model.dart' hide ModelExtension;
 export 'src/quanitzation_params.dart';
 export 'src/tensor.dart';
-export 'src/tensor_flow_lite.dart';
 export 'src/tflite.dart';

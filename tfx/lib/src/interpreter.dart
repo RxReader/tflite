@@ -42,6 +42,7 @@ class Interpreter {
 
   // FEATURE: allowFp16PrecisionForFp32
 
+  // ignore: avoid_setters_without_getters
   set allowBufferHandleOutput(bool allowBufferHandleOutput) => TfLiteSetAllowBufferHandleOutput(_ref, allowBufferHandleOutput);
 
   // FEATURE: setCancelled
@@ -164,11 +165,13 @@ class InterpreterOptions {
   final Pointer<TfLiteInterpreterOptions> _ref;
   bool _deleted = false;
 
+  // ignore: avoid_setters_without_getters
   set numThreads(int numThreads) {
     TfLiteInterpreterOptionsSetNumThreads(_ref, numThreads);
   }
 
   /// Android
+  // ignore: avoid_setters_without_getters
   set useNnApi(bool useNnApi) {
     assert(Platform.isAndroid);
     TfLiteInterpreterOptionsSetUseNNAPI(_ref, useNnApi);

@@ -14,7 +14,6 @@ class Model {
     return Model._(model);
   }
 
-  // TODO: 着重验证 size_t
   factory Model.fromBuffer(Uint8List buffer) {
     final int size = buffer.length;
     final Pointer<Uint8> ptr = calloc<Uint8>(size);
