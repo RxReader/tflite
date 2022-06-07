@@ -45,7 +45,6 @@ class Tensor {
     return QuantizationParams(params.scale, params.zero_point);
   }
 
-  // TODO: 着重验证 size_t
   void copyFromBuffer(Uint8List buffer) {
     final int size = buffer.length;
     final Pointer<Uint8> ptr = calloc<Uint8>(size);
@@ -56,7 +55,6 @@ class Tensor {
     calloc.free(ptr);
   }
 
-  // TODO: 着重验证 size_t
   Uint8List copyToBuffer() {
     final int size = TfLiteTensorByteSize(_ref);
     final Pointer<Uint8> ptr = calloc<Uint8>(size);
