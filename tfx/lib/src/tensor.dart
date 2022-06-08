@@ -19,6 +19,8 @@ class Tensor {
 
   int get numDims => TfLiteTensorNumDims(_ref);
 
+  int get numElements => _computeNumElements(shape);
+
   List<int> get shape => List<int>.generate(TfLiteTensorNumDims(_ref), (int index) => TfLiteTensorDim(_ref, index));
 
   int get byteSize => TfLiteTensorByteSize(_ref);
@@ -65,6 +67,14 @@ class Tensor {
     final Uint8List buffer = externalTypedData.sublist(0);
     calloc.free(ptr);
     return buffer;
+  }
+
+  static int _computeNumElements(List<int> shape) {
+    int n = 1;
+    for (int i = 0; i < shape.length; i++) {
+      n *= shape[i];
+    }
+    return n;
   }
 }
 

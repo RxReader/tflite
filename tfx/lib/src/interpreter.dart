@@ -116,10 +116,10 @@ class Interpreter {
 
 extension InterpreterRunner on Interpreter {
   void run(Object input, Object output) {
-    runForMultipleInputs(<Object>[input], <int, Object>{0: output});
+    runForMultipleInputsOutputs(<Object>[input], <int, Object>{0: output});
   }
 
-  void runForMultipleInputs(List<Object> inputs, Map<int, Object> outputs) {
+  void runForMultipleInputsOutputs(List<Object> inputs, Map<int, Object> outputs) {
     checkArgument(inputs.isNotEmpty, message: 'Input error: Inputs should not be null or empty.');
     checkArgument(outputs.isNotEmpty, message: 'Input error: Outputs should not be null or empty.');
 
