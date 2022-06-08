@@ -4,7 +4,7 @@
 #
 Pod::Spec.new do |s|
   s.name             = 'tfx'
-  s.version          = '0.0.1'
+  s.version          = '0.0.2'
   s.summary          = 'TensorFlow Lite Flutter plugin provides an easy, flexible, and fast Dart API to integrate TFLite models in flutter apps.'
   s.description      = <<-DESC
 TensorFlow Lite Flutter plugin provides an easy, flexible, and fast Dart API to integrate TFLite models in flutter apps.

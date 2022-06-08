@@ -17,10 +17,10 @@ PODS:
   - TensorFlowLiteObjC/Metal (2.9.1):
     - TensorFlowLiteC/Metal (= 2.9.1)
     - TensorFlowLiteObjC/Core (= 2.9.1)
-  - tfx (0.0.1):
+  - tfx (0.0.2):
     - Flutter
-    - tfx/vendor (= 0.0.1)
-  - tfx/vendor (0.0.1):
+    - tfx/vendor (= 0.0.2)
+  - tfx/vendor (0.0.2):
     - Flutter
     - TensorFlowLiteObjC (= 2.9.1)
     - TensorFlowLiteObjC/CoreML (= 2.9.1)
@@ -45,7 +45,7 @@ SPEC CHECKSUMS:
   Flutter: 50d75fe2f02b26cc09d224853bb45737f8b3214a
   TensorFlowLiteC: 0a765860195fae345ca7398e33b07c80104c4b61
   TensorFlowLiteObjC: 07e4d51379877026f8c979842cb86b208580f670
-  tfx: 5b50645e7f2e2b738a9c56b800505e08661cb0c2
+  tfx: 7ccb24b7531ab7dbf451129861b9d6802008e81c
 
 PODFILE CHECKSUM: e321e173bdc500607f6904731a00c749f9f6c2ed
 
