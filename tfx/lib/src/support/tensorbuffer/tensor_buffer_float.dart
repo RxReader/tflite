@@ -4,7 +4,13 @@ import 'package:tfx/src/bindings/c/c_api_types.dart';
 import 'package:tfx/src/support/common/internal/support_preconditions.dart';
 import 'package:tfx/src/support/tensorbuffer/tensor_buffer.dart';
 
+/// https://github.com/tensorflow/tflite-support/blob/v0.4.1/tensorflow_lite_support/java/src/java/org/tensorflow/lite/support/tensorbuffer/TensorBufferFloat.java
+
+/// Represents data buffer with float values.
 class TensorBufferFloat extends TensorBuffer {
+  /// Creates a [TensorBufferFloat] with specified [shape].
+  ///
+  /// throw ArgumentError if {@code shape} has non-positive elements.
   TensorBufferFloat(super.shape);
 
   TensorBufferFloat.dynamic() : super.dynamic();

@@ -4,7 +4,12 @@ import 'package:tfx/src/bindings/c/c_api_types.dart';
 import 'package:tfx/src/support/common/internal/support_preconditions.dart';
 import 'package:tfx/src/support/tensorbuffer/tensor_buffer.dart';
 
+/// https://github.com/tensorflow/tflite-support/blob/v0.4.1/tensorflow_lite_support/java/src/java/org/tensorflow/lite/support/tensorbuffer/TensorBufferUint8.java
+
+/// Represents data buffer with 8-bit unsigned integer values.
 class TensorBufferUint8 extends TensorBuffer {
+  /// Creates a [TensorBufferUint8] with specified [shape].
+  /// throw ArgumentError if [shape] has non-positive elements.
   TensorBufferUint8(super.shape);
 
   TensorBufferUint8.dynamic() : super.dynamic();
