@@ -41,7 +41,9 @@ abstract class TensorBuffer {
   /// tensorBuffer.loadFloatArray(arr4); // Error: The size of byte buffer and the shape do not match.
   ///
   /// [dataType] The dataType of the [TensorBuffer] to be created.
-  factory TensorBuffer.createDynamic(int /*TfLiteType*/ dataType) {
+  factory TensorBuffer.createDynamic({
+    required int /*TfLiteType*/ dataType,
+  }) {
     switch (dataType) {
       case TfLiteType.kTfLiteFloat32:
         return TensorBufferFloat.dynamic();
@@ -72,7 +74,10 @@ abstract class TensorBuffer {
   /// [shape] The shape of the [TensorBuffer] to be created.
   /// [dataType] The dataType of the [TensorBuffer] to be created.
   /// throw ArgumentError if [shape] has non-positive elements.
-  factory TensorBuffer.createFixedSize(List<int> shape, int /*TfLiteType*/ dataType) {
+  factory TensorBuffer.createFixedSize({
+    required List<int> shape,
+    required int /*TfLiteType*/ dataType,
+  }) {
     switch (dataType) {
       case TfLiteType.kTfLiteFloat32:
         return TensorBufferFloat(shape);
@@ -87,12 +92,15 @@ abstract class TensorBuffer {
   ///
   /// [buffer] the source [TensorBuffer] to copy from.
   /// [dataType] the expected [TfLiteType] of newly created [TensorBuffer].
-  factory TensorBuffer.createFrom(TensorBuffer buffer, int /*TfLiteType*/ dataType) {
+  factory TensorBuffer.createFrom({
+    required TensorBuffer buffer,
+    required int /*TfLiteType*/ dataType,
+  }) {
     TensorBuffer result;
     if (buffer.isDynamic) {
-      result = TensorBuffer.createDynamic(dataType);
+      result = TensorBuffer.createDynamic(dataType: dataType);
     } else {
-      result = TensorBuffer.createFixedSize(buffer.shape, dataType);
+      result = TensorBuffer.createFixedSize(shape: buffer.shape, dataType: dataType);
     }
     if (buffer.dataType == TfLiteType.kTfLiteFloat32 && dataType == TfLiteType.kTfLiteFloat32) {
       final List<double> data = buffer.getFloatArray();
@@ -149,6 +157,7 @@ abstract class TensorBuffer {
     throw ArgumentError.value(dataType, null, 'TfLiteType error: TfLiteType $dataType is not supported yet');
   }
 
+  @protected
   ByteData get byteData => _byteData;
 
   /// Returns the data buffer.
@@ -192,9 +201,7 @@ abstract class TensorBuffer {
   void _assertShapeIsCorrect() {
     final int flatSize = computeFlatSize(_shape);
     SupportPreconditions.checkState(
-      _byteData.lengthInBytes == typeSize * flatSize,
-        'The size of underlying ByteBuffer (${_byteData.lengthInBytes}) and the shape ($_shape) do not match. The ByteBuffer may have been changed.'
-    );
+        _byteData.lengthInBytes == typeSize * flatSize, 'The size of underlying ByteBuffer (${_byteData.lengthInBytes}) and the shape ($_shape) do not match. The ByteBuffer may have been changed.');
   }
 
   /// Returns a float array of the values stored in this buffer. If the buffer is of different types
