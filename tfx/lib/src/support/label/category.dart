@@ -14,12 +14,12 @@ class Category {
   ///   so that the displayName is "manzana".
   /// [score] the probability score of this label category
   /// [index] the index of the label in the corresponding label file
-  factory Category.create({
-    int index = _DEFAULT_INDEX,
-    required String label,
+  factory Category.create(
+    String label,
+    double score, [
     String displayName = '',
-    required double score,
-  }) {
+    int index = _DEFAULT_INDEX,
+  ]) {
     return Category._(index, label, displayName, score);
   }
 
@@ -36,7 +36,8 @@ class Category {
 
   @override
   bool operator ==(Object other) =>
-      identical(this, other) || other is Category && runtimeType == other.runtimeType && index == other.index && label == other.label && displayName == other.displayName && (other.score - score).abs() < _TOLERANCE;
+      identical(this, other) ||
+      other is Category && runtimeType == other.runtimeType && index == other.index && label == other.label && displayName == other.displayName && (other.score - score).abs() < _TOLERANCE;
 
   @override
   int get hashCode => index.hashCode ^ label.hashCode ^ displayName.hashCode ^ score.hashCode;

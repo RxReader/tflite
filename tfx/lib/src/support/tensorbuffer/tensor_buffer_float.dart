@@ -8,12 +8,12 @@ import 'package:tfx/src/support/tensorbuffer/tensor_buffer.dart';
 
 /// Represents data buffer with float values.
 class TensorBufferFloat extends TensorBuffer {
+  TensorBufferFloat.dynamic() : super.dynamic();
+
   /// Creates a [TensorBufferFloat] with specified [shape].
   ///
   /// throw ArgumentError if {@code shape} has non-positive elements.
-  TensorBufferFloat(super.shape);
-
-  TensorBufferFloat.dynamic() : super.dynamic();
+  TensorBufferFloat.shape(List<int> shape) : super.shape(shape);
 
   @override
   int get dataType => TfLiteType.kTfLiteFloat32;

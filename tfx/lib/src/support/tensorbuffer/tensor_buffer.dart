@@ -10,14 +10,6 @@ import 'package:tfx/src/support/tensorbuffer/tensor_buffer_uint8.dart';
 
 /// Represents the data buffer for either a model's input or its output.
 abstract class TensorBuffer {
-  /// Constructs a fixed size [TensorBuffer] with specified [shape].
-  /// throw ArgumentError if [shape] has non-positive elements.
-  @protected
-  TensorBuffer(List<int> shape) {
-    _isDynamic = false;
-    _allocateMemory(shape);
-  }
-
   /// Creates an empty dynamic [TensorBuffer] with specified [TfLiteType]. The shape of the
   /// created [TensorBuffer] is {0}.
   ///
@@ -41,9 +33,9 @@ abstract class TensorBuffer {
   /// tensorBuffer.loadFloatArray(arr4); // Error: The size of byte buffer and the shape do not match.
   ///
   /// [dataType] The dataType of the [TensorBuffer] to be created.
-  factory TensorBuffer.createDynamic({
-    required int /*TfLiteType*/ dataType,
-  }) {
+  factory TensorBuffer.createDynamic(
+    int /*TfLiteType*/ dataType,
+  ) {
     switch (dataType) {
       case TfLiteType.kTfLiteFloat32:
         return TensorBufferFloat.dynamic();
@@ -74,15 +66,15 @@ abstract class TensorBuffer {
   /// [shape] The shape of the [TensorBuffer] to be created.
   /// [dataType] The dataType of the [TensorBuffer] to be created.
   /// throw ArgumentError if [shape] has non-positive elements.
-  factory TensorBuffer.createFixedSize({
-    required List<int> shape,
-    required int /*TfLiteType*/ dataType,
-  }) {
+  factory TensorBuffer.createFixedSize(
+    List<int> shape,
+    int /*TfLiteType*/ dataType,
+  ) {
     switch (dataType) {
       case TfLiteType.kTfLiteFloat32:
-        return TensorBufferFloat(shape);
+        return TensorBufferFloat.shape(shape);
       case TfLiteType.kTfLiteUInt8:
-        return TensorBufferUint8(shape);
+        return TensorBufferUint8.shape(shape);
       default:
         throw ArgumentError('TensorBuffer does not support data type: $dataType');
     }
@@ -92,15 +84,15 @@ abstract class TensorBuffer {
   ///
   /// [buffer] the source [TensorBuffer] to copy from.
   /// [dataType] the expected [TfLiteType] of newly created [TensorBuffer].
-  factory TensorBuffer.createFrom({
-    required TensorBuffer buffer,
-    required int /*TfLiteType*/ dataType,
-  }) {
+  factory TensorBuffer.createFrom(
+    TensorBuffer buffer,
+    int /*TfLiteType*/ dataType,
+  ) {
     TensorBuffer result;
     if (buffer.isDynamic) {
-      result = TensorBuffer.createDynamic(dataType: dataType);
+      result = TensorBuffer.createDynamic(dataType);
     } else {
-      result = TensorBuffer.createFixedSize(shape: buffer.shape, dataType: dataType);
+      result = TensorBuffer.createFixedSize(buffer.shape, dataType);
     }
     if (buffer.dataType == TfLiteType.kTfLiteFloat32 && dataType == TfLiteType.kTfLiteFloat32) {
       final List<double> data = buffer.getFloatArray();
@@ -117,6 +109,14 @@ abstract class TensorBuffer {
   TensorBuffer.dynamic() {
     _isDynamic = true;
     _allocateMemory(<int>[0]);
+  }
+
+  /// Constructs a fixed size [TensorBuffer] with specified [shape].
+  /// throw ArgumentError if [shape] has non-positive elements.
+  @protected
+  TensorBuffer.shape(List<int> shape) {
+    _isDynamic = false;
+    _allocateMemory(shape);
   }
 
   /// Where the data is stored.
@@ -300,7 +300,6 @@ abstract class TensorBuffer {
 
   /// For dynamic buffer, resize the memory if needed. For fixed-size buffer, check if the
   /// [shape] of src fits the buffer size.
-  @protected
   void resize(List<int> shape) {
     if (_isDynamic) {
       _allocateMemory(shape);

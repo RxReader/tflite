@@ -25,6 +25,6 @@ class CastOp implements TensorOperator {
     if (input.dataType == _destinationType) {
       return input;
     }
-    return TensorBuffer.createFrom(buffer: input, dataType: _destinationType);
+    return TensorBuffer.createFrom(input, _destinationType);
   }
 }

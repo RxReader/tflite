@@ -103,7 +103,7 @@ class TensorLabel {
     int i = 0;
     for (String label in labels) {
       final ByteData byteData = byteBuffer.asByteData(i * subArrayLength);
-      final TensorBuffer labelBuffer = TensorBuffer.createDynamic(dataType: dataType);
+      final TensorBuffer labelBuffer = TensorBuffer.createDynamic(dataType);
       labelBuffer.loadBuffer(byteData.buffer, _shape.sublist(labeledAxis + 1, _shape.length));
       labelToTensorMap[label] = labelBuffer;
       i += 1;
@@ -155,7 +155,7 @@ class TensorLabel {
     final List<Category> result = <Category>[];
     int i = 0;
     for (String label in labels!) {
-      result.add(Category.create(label: label, score: data[i]));
+      result.add(Category.create(label, data[i]));
       i += 1;
     }
     return result;

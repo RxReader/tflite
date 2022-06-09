@@ -8,11 +8,11 @@ import 'package:tfx/src/support/tensorbuffer/tensor_buffer.dart';
 
 /// Represents data buffer with 8-bit unsigned integer values.
 class TensorBufferUint8 extends TensorBuffer {
+  TensorBufferUint8.dynamic() : super.dynamic();
+
   /// Creates a [TensorBufferUint8] with specified [shape].
   /// throw ArgumentError if [shape] has non-positive elements.
-  TensorBufferUint8(super.shape);
-
-  TensorBufferUint8.dynamic() : super.dynamic();
+  TensorBufferUint8.shape(List<int> shape) : super.shape(shape);
 
   @override
   int get dataType => TfLiteType.kTfLiteUInt8;
