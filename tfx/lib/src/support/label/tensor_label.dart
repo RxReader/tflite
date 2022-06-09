@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:tfx/src/support/common/internal/support_preconditions.dart';
+import 'package:tfx/src/support/label/category.dart';
 import 'package:tfx/src/support/tensorbuffer/tensor_buffer.dart';
 
 /// https://github.com/tensorflow/tflite-support/blob/v0.4.1/tensorflow_lite_support/java/src/java/org/tensorflow/lite/support/label/TensorLabel.java
@@ -56,63 +57,109 @@ class TensorLabel {
   ///   the shape of [tensorBuffer], or any value (labels) has different size with the
   ///   [tensorBuffer] on the given dimension.
   TensorLabel.fromMap({
-    required this.axisLabels,
-    required this.tensorBuffer,
-  }) : shape = tensorBuffer.shape {
+    required Map<int, List<String>> axisLabels,
+    required TensorBuffer tensorBuffer,
+  }) {
+    _axisLabels = axisLabels;
+    _tensorBuffer = tensorBuffer;
+    _shape = tensorBuffer.shape;
     for (MapEntry<int, List<String>> entry in axisLabels.entries) {
       final int axis = entry.key;
-      SupportPreconditions.checkArgument(axis >= 0 && axis < shape.length, 'Invalid axis id: $axis');
+      SupportPreconditions.checkArgument(axis >= 0 && axis < _shape.length, 'Invalid axis id: $axis');
       SupportPreconditions.checkArgument(
-        shape[axis] == entry.value.length,
+        _shape[axis] == entry.value.length,
         'Label number ${entry.value.length} mismatch the shape on axis $axis',
       );
     }
   }
 
-  late final Map<int, List<String>> axisLabels;
-  late final TensorBuffer tensorBuffer;
-  late final List<int> shape;
+  late final Map<int, List<String>> _axisLabels;
+  late final TensorBuffer _tensorBuffer;
+  late final List<int> _shape;
 
+  /// Gets the map with a pair of the label and the corresponding TensorBuffer. Only allow the
+  /// mapping on the first axis with size greater than 1 currently.
   Map<String, TensorBuffer> getMapWithTensorBuffer() {
-    final int labeledAxis = _getFirstAxisWithSizeGreaterThanOne(tensorBuffer);
+    final int labeledAxis = _getFirstAxisWithSizeGreaterThanOne(_tensorBuffer);
 
     SupportPreconditions.checkArgument(
-      axisLabels.containsKey(labeledAxis),
+      _axisLabels.containsKey(labeledAxis),
       'get a <String, TensorBuffer> map requires the labels are set on the first non-1 axis.',
     );
 
     final Map<String, TensorBuffer> labelToTensorMap = <String, TensorBuffer>{};
-    final List<String> labels = axisLabels[labeledAxis]!;
+    final List<String> labels = _axisLabels[labeledAxis]!;
 
-    final int dataType = tensorBuffer.dataType;
-    final int typeSize = tensorBuffer.typeSize;
-    final int flatSize = tensorBuffer.flatSize;
+    final int dataType = _tensorBuffer.dataType;
+    final int typeSize = _tensorBuffer.typeSize;
+    final int flatSize = _tensorBuffer.flatSize;
 
     // Gets the underlying bytes that could be used to generate the sub-array later.
-    final ByteBuffer byteBuffer = tensorBuffer.buffer;
+    final ByteBuffer byteBuffer = _tensorBuffer.buffer;
 
     // Note: computation below is only correct when labeledAxis is the first axis with size greater
     // than 1.
-    final int subArrayLength = (flatSize / shape[labeledAxis]).floor() * typeSize;
+    final int subArrayLength = (flatSize / _shape[labeledAxis]).floor() * typeSize;
     int i = 0;
-    SupportPreconditions.checkNotNull(labels, 'Label list should never be null');
     for (String label in labels) {
       final ByteData byteData = byteBuffer.asByteData(i * subArrayLength);
       final TensorBuffer labelBuffer = TensorBuffer.createDynamic(dataType: dataType);
-      labelBuffer.loadBuffer(byteData.buffer, shape.sublist(labeledAxis + 1, shape.length));
+      labelBuffer.loadBuffer(byteData.buffer, _shape.sublist(labeledAxis + 1, _shape.length));
       labelToTensorMap[label] = labelBuffer;
       i += 1;
     }
     return labelToTensorMap;
   }
 
-  // Map<String, double> getMapWithFloatValue() {
-  //
-  // }
+  /// Gets a map that maps label to float. Only allow the mapping on the first axis with size greater
+  /// than 1, and the axis should be effectively the last axis (which means every sub tensor
+  /// specified by this axis should have a flat size of 1).
+  ///
+  /// [TensorLabel.getCategoryList] is an alternative API to get the result.
+  Map<String, double> getMapWithFloatValue() {
+    final int labeledAxis = _getFirstAxisWithSizeGreaterThanOne(_tensorBuffer);
+    SupportPreconditions.checkState(
+      labeledAxis == _shape.length - 1,
+      'get a <String, Scalar> map is only valid when the only labeled axis is the last one.',);
+    final List<String>? labels = _axisLabels[labeledAxis];
+    final List<double> data = _tensorBuffer.getFloatArray();
+    SupportPreconditions.checkState(labels?.length == data.length);
+    final Map<String, double> result = <String, double>{};
+    int i = 0;
+    for (String label in labels!) {
+      result[label] = data[i];
+      i += 1;
+    }
+    return result;
+  }
 
-  // List<Category> getCategoryList() {
-  //
-  // }
+  /// Gets a list of [Category] from the [TensorLabel] object.
+  ///
+  /// The axis of label should be effectively the last axis (which means every sub tensor
+  /// specified by this axis should have a flat size of 1), so that each labelled sub tensor could be
+  /// converted into a float value score. Example: A [TensorLabel] with shape [code [2, 5, 3]]
+  /// and axis 2 is valid. If axis is 1 or 0, it cannot be converted into a [Category].
+  ///
+  /// [TensorLabel.getMapWithFloatValue] is an alternative but returns a {@link Map} as
+  /// the result.
+  ///
+  /// throw StateError if size of a sub tensor on each label is not 1.
+  List<Category> getCategoryList() {
+    final int labeledAxis = _getFirstAxisWithSizeGreaterThanOne(_tensorBuffer);
+    SupportPreconditions.checkState(
+      labeledAxis == _shape.length - 1,
+      'get a Category list is only valid when the only labeled axis is the last one.',);
+    final List<String>? labels = _axisLabels[labeledAxis];
+    final List<double> data = _tensorBuffer.getFloatArray();
+    SupportPreconditions.checkState(labels?.length == data.length);
+    final List<Category> result = <Category>[];
+    int i = 0;
+    for (String label in labels!) {
+      result.add(Category.create(label: label, score: data[i]));
+      i += 1;
+    }
+    return result;
+  }
 
   static int _getFirstAxisWithSizeGreaterThanOne(TensorBuffer tensorBuffer) {
     final List<int> shape = tensorBuffer.shape;
