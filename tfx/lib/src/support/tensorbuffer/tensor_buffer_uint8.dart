@@ -31,14 +31,14 @@ class TensorBufferUint8 extends TensorBuffer {
   List<int> getIntArray() {
     final List<int> arr = List<int>.filled(flatSize, 0);
     for (int i = 0; i < flatSize; i++) {
-      arr[i] = byteData.getUint8(i * typeSize);
+      arr[i] = byteData.getUint8(i * typeSize) & 0xff;
     }
     return arr;
   }
 
   @override
   int getIntValue(int absIndex) {
-    return byteData.getUint8(absIndex * typeSize);
+    return byteData.getUint8(absIndex * typeSize) & 0xff;
   }
 
   @override
