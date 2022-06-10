@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tfx/src/bindings/c/c_api_types.dart';
+import 'package:tfx/src/misc/float_loss_precision.dart';
 import 'package:tfx/src/support/tensorbuffer/tensor_buffer.dart';
 
 /// Test helper class for inserting and retrieving arrays.
@@ -125,9 +126,7 @@ class ArrayTestRunnerBuilder {
       default:
         throw AssertionError('Cannot test TensorBuffer in the TfLiteType of $bufferType');
     }
-    er.floatArr = expectedFloatArr.map((double element) {
-      return (ByteData(4)..setFloat32(0, element, Endian.little)).getFloat32(0, Endian.little);// 精度损失
-    }).toList();
+    er.floatArr = expectedFloatArr;
     er.intArr = expectedIntArr;
   }
 
@@ -256,7 +255,7 @@ void main() {
     src.loadFloatArray(FLOAT_ARRAY1);
     final TensorBuffer dst = TensorBuffer.createFrom(src, TfLiteType.kTfLiteFloat32);
     final List<double> data = dst.getFloatArray();
-    expect(listEquals(data, FLOAT_ARRAY1), isTrue);
+    expect(listEquals(data, FLOAT_ARRAY1.lossPrecision), isTrue);
   });
 
   test('testGetBuffer', () {
@@ -291,7 +290,7 @@ void main() {
       ..setExpectedResults(
         /*bufferType = */
         TfLiteType.kTfLiteFloat32,
-        /*expectedFloatArr=*/ FLOAT_SCALAR_ARRAY,
+        /*expectedFloatArr=*/ FLOAT_SCALAR_ARRAY.lossPrecision,
         /*expectedIntArr=*/ INT_SCALAR_ARRAY,
       )
       ..setExpectedResults(
@@ -329,7 +328,7 @@ void main() {
       ..setExpectedResults(
         /*bufferType = */
         TfLiteType.kTfLiteFloat32,
-        /*expectedFloatArr=*/ FLOAT_ARRAY1,
+        /*expectedFloatArr=*/ FLOAT_ARRAY1.lossPrecision,
         /*expectedIntArr=*/ INT_ARRAY1,
       )
       ..setExpectedResults(
@@ -341,6 +340,67 @@ void main() {
     builder.build().run();
   });
 
+  test('testRepeatedLoadAndGetIntArrayWithSameFixedSize', () {
+    final ArrayTestRunnerBuilder builder = ArrayTestRunnerBuilder.newInstance()
+      ..addSrcArray(INT_ARRAY2, ARRAY2_SHAPE)
+      ..addSrcArray(INT_ARRAY3, ARRAY3_SHAPE)
+      ..setTensorBufferShape(ARRAY2_SHAPE)
+      ..setExpectedResults(
+        /*bufferType = */
+        TfLiteType.kTfLiteFloat32,
+        /*expectedFloatArr=*/ FLOAT_ARRAY3_ROUNDED,
+        /*expectedIntArr=*/ INT_ARRAY3,
+      )
+      ..setExpectedResults(
+        /*bufferType = */
+        TfLiteType.kTfLiteUInt8,
+        /*expectedFloatArr=*/ FLOAT_ARRAY3_ROUNDED,
+        /*expectedIntArr=*/ INT_ARRAY3,
+      );
+    builder.build().run();
+  });
+
+  test('testRepeatedLoadAndGetFloatArrayWithSameFixedSize', () {
+    final ArrayTestRunnerBuilder builder = ArrayTestRunnerBuilder.newInstance()
+      ..addSrcArray(FLOAT_ARRAY2, ARRAY2_SHAPE)
+      ..addSrcArray(FLOAT_ARRAY3, ARRAY3_SHAPE)
+      ..setTensorBufferShape(ARRAY2_SHAPE)
+      ..setExpectedResults(
+        /*bufferType = */
+        TfLiteType.kTfLiteFloat32,
+        /*expectedFloatArr=*/ FLOAT_ARRAY3.lossPrecision,
+        /*expectedIntArr=*/ INT_ARRAY3,
+      )
+      ..setExpectedResults(
+        /*bufferType = */
+        TfLiteType.kTfLiteUInt8,
+        /*expectedFloatArr=*/ FLOAT_ARRAY3_ROUNDED,
+        /*expectedIntArr=*/ INT_ARRAY3,
+      );
+    builder.build().run();
+  });
+
+  test('testRepeatedLoadIntArrayWithDifferentFixedSize', () {
+    const List<int> srcArr1 = INT_ARRAY1;
+    const List<int> srcArr2 = INT_ARRAY2;
+    for (int dataType in ArrayTestRunner.BUFFER_TYPE_LIST) {
+      final TensorBuffer tensorBuffer = TensorBuffer.createFixedSize(<int>[srcArr1.length], dataType);
+      tensorBuffer.loadIntArray(srcArr1, <int>[srcArr1.length]);
+      // Load srcArr2 which had different size as srcArr1.
+      expect(() => tensorBuffer.loadIntArray(srcArr2, <int>[srcArr2.length]), throwsA(isArgumentError));
+      // Assert.assertThrows(
+      // IllegalArgumentException.class,
+      // () -> tensorBuffer.loadArray(srcArr2, new int[] {srcArr2.length}));
+    }
+  });
+
+  // test('', () {});
+  // test('', () {});
+  // test('', () {});
+  // test('', () {});
+  // test('', () {});
+  // test('', () {});
+  // test('', () {});
   // test('', () {});
   // test('', () {});
   // test('', () {});

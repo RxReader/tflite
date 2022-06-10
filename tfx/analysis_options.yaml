@@ -243,7 +243,7 @@ linter:
     - use_named_constants
     - use_raw_strings
     - use_rethrow_when_possible
-    - use_setters_to_change_properties
+    # - use_setters_to_change_properties
     # - use_string_buffers # has false positives: https://github.com/dart-lang/sdk/issues/34182
     - use_test_throws_matchers
     # - use_to_and_as_if_applicable # has false positives, so we prefer to catch this by code-review
