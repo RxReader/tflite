@@ -125,7 +125,9 @@ class ArrayTestRunnerBuilder {
       default:
         throw AssertionError('Cannot test TensorBuffer in the TfLiteType of $bufferType');
     }
-    er.floatArr = expectedFloatArr;
+    er.floatArr = expectedFloatArr.map((double element) {
+      return (ByteData(4)..setFloat32(0, element, Endian.little)).getFloat32(0, Endian.little);// 精度损失
+    }).toList();
     er.intArr = expectedIntArr;
   }
 
